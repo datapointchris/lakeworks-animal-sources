@@ -6,7 +6,7 @@ requires-python = ">=3.11"
 dependencies = ["pyyaml>=6.0"]
 
 # Nothing is built from this repo. The [project] table exists so the validator's one dependency is
-# declared and locked; everything below is the fleet's tool configuration, owned by
+# declared and locked; everything below is shared tool configuration, owned by
 # the toolchain generator.
 [tool.hatch.build.targets.wheel]
 bypass-selection = true
