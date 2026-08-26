@@ -1,0 +1,56 @@
+source_id: animal.austin
+domain: animal
+adapter: socrata
+enabled: true
+endpoint: https://data.austintexas.gov
+
+# Dataset ids are resolved at runtime from the portal catalog, never pinned. Austin has renamed and
+# re-issued these datasets before, and a pinned id fails as an empty result rather than an error.
+discovery:
+  by_title:
+    intake: "Austin Animal Center Intakes"
+    outcome: "Austin Animal Center Outcomes"
+
+watermark:
+  strategy: field
+  field: DateTime
+
+schedule: "cron(0 7 * * ? *)"
+
+# Austin publishes two feeds joinable on animal id — the "two-feed" shape. Sonoma and Long Beach
+# publish one row carrying both, which is why the conform job splits some sources and joins others.
+shape: two_feed
+join_key: Animal ID
+
+mapping:
+  intake:
+    animal_id:          "Animal ID"
+    event_at:           "DateTime"
+    name:               "Name"
+    animal_type:        "Animal Type"
+    breed_raw:          "Breed"
+    color_raw:          "Color"
+    sex_raw:            "Sex upon Intake"
+    age_raw:            "Age upon Intake"
+    intake_type_raw:    "Intake Type"
+    intake_condition_raw: "Intake Condition"
+    found_location:     "Found Location"
+  outcome:
+    animal_id:          "Animal ID"
+    event_at:           "DateTime"
+    outcome_type_raw:   "Outcome Type"
+    outcome_subtype_raw: "Outcome Subtype"
+    date_of_birth:      "Date of Birth"
+
+contract: contracts/shelter_feed.v1.yml
+
+notes: |
+  The canonical dataset — separate intake and outcome feeds since Oct 2013, joinable on Animal ID.
+
+  ⚠️ Austin is the largest no-kill city in the US, so its outcome distribution is not nationally
+  representative. Any cross-shelter adoption-rate comparison that does not normalise for intake mix
+  will rank Austin unfairly well. Recorded here rather than in an analysis, because the trap belongs
+  with the source.
+
+  An animal can be surrendered more than once, so Animal ID is not unique in either feed. The join
+  is on (animal_id, nearest subsequent outcome), not on animal_id alone.

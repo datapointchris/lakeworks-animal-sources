@@ -1,0 +1,48 @@
+source_id: animal.sonoma
+domain: animal
+adapter: socrata
+enabled: true
+endpoint: https://data.sonomacounty.ca.gov
+
+discovery:
+  by_title:
+    combined: "Animal Shelter Intake and Outcome"
+
+watermark:
+  strategy: field
+  field: Intake Date
+
+schedule: "cron(0 7 * * ? *)"
+
+# The "one-row" shape — intake and outcome on a single record. The conform job splits this into two
+# events, which is the mirror image of what it does to Austin. Neither source is wrong; the domain
+# model is an event model and both sources have to reach it.
+shape: one_row
+
+mapping:
+  combined:
+    animal_id:            "Animal ID"
+    name:                 "Name"
+    animal_type:          "Type"
+    breed_raw:            "Breed"
+    color_raw:            "Color"
+    sex_raw:              "Sex"
+    date_of_birth:        "Date Of Birth"
+    intake_at:            "Intake Date"
+    intake_type_raw:      "Intake Type"
+    intake_condition_raw: "Intake Condition"
+    outcome_at:           "Outcome Date"
+    outcome_type_raw:     "Outcome Type"
+    outcome_subtype_raw:  "Outcome Subtype"
+    found_location:       "Location"
+
+contract: contracts/shelter_feed.v1.yml
+
+notes: |
+  One row per animal-visit carrying both intake and outcome. A row with a null Outcome Date is an
+  animal still in care, not a data error — splitting it must emit an intake event and no outcome
+  event, rather than an outcome event with a null timestamp.
+
+  Sonoma's outcome vocabulary differs from Austin's: `RETURN TO OWNER` here against `Return to
+  Owner` there, and `EUTHANIZE` against `Euthanasia`. Both map through dim_outcome_type; neither
+  source is normalised in place.

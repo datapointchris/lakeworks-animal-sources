@@ -1,0 +1,9 @@
+.planning
+.coverage
+coverage.xml
+dist/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.venv/
+.ruff_cache/

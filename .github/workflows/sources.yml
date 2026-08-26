@@ -1,0 +1,18 @@
+# Repo-specific, beside the generated validate.yml. A malformed spec would otherwise surface
+# inside a Glue job — minutes into a run, as a KeyError naming a dictionary rather than a file.
+name: Sources
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  specs:
+    runs-on: [self-hosted, private-ci]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v5
+
+      - run: uv run --with pyyaml python validate_sources.py
