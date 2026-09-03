@@ -8,7 +8,7 @@ Read the README first. It carries what a spec holds, why dataset ids are never p
 ## Sources are data, not code
 
 Adding a source is one YAML file and nothing else. The ingestion job is a generic worker
-parameterised by a row, and the fan-out reads this directory as its item list, so nothing needs
+parameterized by a row, and the fan-out reads this directory as its item list, so nothing needs
 widening when a source arrives.
 
 If a new source seems to need a code change, the shape it introduced is the thing to look at. A
