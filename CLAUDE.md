@@ -1,9 +1,7 @@
-# CLAUDE.md
+# lakeworks-animal-sources
 
-Guidance for Claude Code working in this repository.
-
-Read the README first. It carries what a spec holds, why dataset ids are never pinned, and why the
-`notes` field is part of the data rather than commentary on it.
+The README carries what a spec holds, why dataset ids are never pinned, and why the `notes` field
+is part of the data rather than commentary on it.
 
 ## Sources are data, not code
 
