@@ -5,18 +5,23 @@ is part of the data rather than commentary on it.
 
 ## Sources are data, not code
 
-Adding a source is one YAML file and nothing else. The ingestion job is a generic worker
-parameterized by a row, and the fan-out reads this directory as its item list, so nothing needs
-widening when a source arrives.
+Adding a source is one YAML file here, plus a row in `dim_outcome_type` and `dim_breed` for each
+of its spellings those tables do not hold. `lakeworks-animal-conform` reads every spec and holds no
+branch that names a source.
 
-If a new source seems to need a code change, the shape it introduced is the thing to look at. A
-per-source branch anywhere is the failure this layout exists to prevent — the adapter is the only
-place a portal dialect may live, and there are five adapters covering every source here.
+If a source seems to need a code change, look first at the shape it introduced. A per-source branch
+anywhere is the failure this layout exists to prevent.
+
+`adapter`, `endpoint`, `discovery`, `watermark` and `schedule` are written for an ingestion worker
+configured by one spec and nothing else. No lakeworks repo implements that worker, so the validator
+is the only code that reads them. A portal's dialect belongs in its adapter, never in a branch keyed
+on a source. `ADAPTERS` in `validate_sources.py` holds the dialects a spec may name.
 
 ## Never pin a dataset id
 
-Ids are resolved from the portal's catalog endpoint at runtime. Portals rename and re-issue
-datasets, and some publish a separate dataset per fiscal year.
+A spec carries no dataset id. `discovery` names each feed as the portal's catalog lists it, which
+leaves the id to be resolved from the catalog on every fetch. Portals rename and re-issue datasets,
+and some publish a separate dataset per fiscal year.
 
 **A pinned id fails as an empty result, not as an error.** The pipeline stays green and the table
 simply stops growing, which is the failure mode that survives longest. Any suggestion to pin an id
