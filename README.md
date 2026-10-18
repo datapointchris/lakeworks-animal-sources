@@ -52,7 +52,7 @@ CI runs the same validator on every push to `main` and on every pull request.
 | `watermark` | How incrementality works for this source. `WATERMARK_STRATEGIES` holds the strategies | the validator only |
 | `schedule` | When the source is fetched, as an EventBridge cron expression | nothing |
 | `shape` | `two_feed` or `one_row` | conform, which dispatches on it |
-| `join_key` | The column a `two_feed` source's feeds join on | conform |
+| `join_key` | The domain column a `two_feed` source's feeds join on, so `animal_id` rather than `Animal ID` | conform, after the mapping has renamed the columns |
 | `mapping` | Per feed, each domain column and the source column it comes from | conform, which renames and drops every unmapped column |
 | `contract` | The path of the contract the feed is held to | the validator, which requires the key and does not open the file |
 | `notes` | What would make a number from this source wrong | people |
@@ -75,9 +75,9 @@ Shelters lay out intake and outcome in two ways. The domain model is an event mo
 layouts have to reach it. Neither layout is wrong.
 
 **`two_feed`** is Austin's layout: intake and outcome as separate feeds. The mapping names two
-feeds, `intake` and `outcome`, and `join_key` names the column they join on. An animal can be
-surrendered more than once, so its id repeats in both feeds. Conform matches each outcome to the
-latest intake before it, never to the id alone.
+feeds, `intake` and `outcome`. `join_key` names the domain column they join on, and both feeds must
+map it. An animal can be surrendered more than once, so its id repeats in both feeds. Conform
+matches each outcome to the latest intake before it, never to the id alone.
 
 **`one_row`** is Sonoma's layout: one row per animal-visit, carrying both halves. The mapping names
 one feed, `combined`. Its columns for the two halves carry an `intake_` or `outcome_` prefix, and
@@ -123,7 +123,7 @@ Parsing is not the bar. The validator checks:
 
 - `adapter`, `shape` and the watermark strategy against the values it accepts
 - `source_id` against the file name
-- `join_key` against the shape
+- `join_key` against the shape, and against every feed's mapping
 - that a `discovery` block exists
 - that every feed's mapping is non-empty and maps `animal_id`
 

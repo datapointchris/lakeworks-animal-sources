@@ -75,12 +75,15 @@ def check(path: pathlib.Path) -> list[str]:
     if 'discovery' not in spec:
         problems.append('no discovery block — dataset ids must be resolved at runtime, never pinned')
 
+    join_key = spec.get('join_key') if spec['shape'] == 'two_feed' else None
     for feed, mapping in spec['mapping'].items():
         if not isinstance(mapping, dict) or not mapping:
             problems.append(f'mapping.{feed} is empty')
             continue
         if 'animal_id' not in mapping:
             problems.append(f'mapping.{feed} has no animal_id — nothing downstream can key on it')
+        if join_key is not None and join_key not in mapping:
+            problems.append(f'join_key `{join_key}` is not a domain column in mapping.{feed} — conform joins after renaming')
 
     return problems
 

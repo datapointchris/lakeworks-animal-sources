@@ -20,7 +20,7 @@ schedule: "cron(0 7 * * ? *)"
 # Austin publishes two feeds joinable on animal id — the "two-feed" shape. Sonoma and Long Beach
 # publish one row carrying both, which is why the conform job splits some sources and joins others.
 shape: two_feed
-join_key: Animal ID
+join_key: animal_id
 
 mapping:
   intake:
