@@ -54,11 +54,11 @@ CI runs the same validator on every push to `main` and on every pull request.
 | `shape` | `two_feed` or `one_row` | conform, which dispatches on it |
 | `join_key` | The domain column a `two_feed` source's feeds join on, so `animal_id` rather than `Animal ID` | conform, after the mapping has renamed the columns |
 | `mapping` | Per feed, each domain column and the source column it comes from | conform, which renames and drops every unmapped column |
-| `contract` | The path of the contract the feed is held to | the validator, which requires the key and does not open the file |
+| `contract` | The path of the feed's contract file, relative to this repo | the validator, which refuses a path that names no file |
 | `notes` | What would make a number from this source wrong | people |
 
-The validator requires every key except `schedule`, `join_key` and `notes`. It requires `join_key`
-for `two_feed` and refuses it for `one_row`.
+The validator requires every key except `schedule`, `join_key`, `contract` and `notes`. It requires
+`join_key` for `two_feed` and refuses it for `one_row`.
 
 `adapter`, `endpoint`, `discovery`, `watermark` and `schedule` describe the fetch. They are written
 for an ingestion worker configured by one spec and nothing else. No lakeworks repo implements that
@@ -125,6 +125,7 @@ Parsing is not the bar. The validator checks:
 - `source_id` against the file name
 - `join_key` against the shape, and against every feed's mapping
 - that a `discovery` block exists
+- that a `contract`, where a spec gives one, names a file in this repo
 - that every feed's mapping is non-empty and maps `animal_id`
 
 A key added to the spec format gets its check in the same change. A key the validator does not know

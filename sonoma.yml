@@ -36,8 +36,6 @@ mapping:
     outcome_subtype_raw:  "Outcome Subtype"
     found_location:       "Location"
 
-contract: contracts/shelter_feed.v1.yml
-
 notes: |
   One row per animal-visit carrying both intake and outcome. A row with a null Outcome Date is an
   animal still in care, not a data error — splitting it must emit an intake event and no outcome

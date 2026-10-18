@@ -25,7 +25,6 @@ REQUIRED = (
     'endpoint',
     'shape',
     'mapping',
-    'contract',
 )
 
 
@@ -74,6 +73,10 @@ def check(path: pathlib.Path) -> list[str]:
     # an error, so the pipeline stays green while the table stops growing.
     if 'discovery' not in spec:
         problems.append('no discovery block — dataset ids must be resolved at runtime, never pinned')
+
+    contract = spec.get('contract')
+    if contract is not None and not (path.parent / str(contract)).is_file():
+        problems.append(f'contract `{contract}` names no file in this repo')
 
     join_key = spec.get('join_key') if spec['shape'] == 'two_feed' else None
     for feed, mapping in spec['mapping'].items():

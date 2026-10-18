@@ -42,8 +42,6 @@ mapping:
     outcome_subtype_raw: "Outcome Subtype"
     date_of_birth:      "Date of Birth"
 
-contract: contracts/shelter_feed.v1.yml
-
 notes: |
   The canonical dataset — separate intake and outcome feeds since Oct 2013, joinable on Animal ID.
 
