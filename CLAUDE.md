@@ -12,10 +12,9 @@ branch that names a source.
 If a source seems to need a code change, look first at the shape it introduced. A per-source branch
 anywhere is the failure this layout exists to prevent.
 
-`adapter`, `endpoint`, `discovery`, `watermark` and `schedule` are written for an ingestion worker
-configured by one spec and nothing else. No lakeworks repo implements that worker, so the validator
-is the only code that reads them. A portal's dialect belongs in its adapter, never in a branch keyed
-on a source. `ADAPTERS` in `validate_sources.py` holds the dialects a spec may name.
+A portal's dialect belongs in its adapter, never in a branch keyed on a source. `ADAPTERS` in
+`validate_sources.py` holds the dialects a spec may name. The README's key table says which code
+reads each key.
 
 ## Never pin a dataset id
 

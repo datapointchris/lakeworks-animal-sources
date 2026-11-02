@@ -60,9 +60,9 @@ CI runs the same validator on every push to `main` and on every pull request.
 The validator requires every key except `schedule`, `join_key`, `contract` and `notes`. It requires
 `join_key` for `two_feed` and refuses it for `one_row`.
 
-`adapter`, `endpoint`, `discovery`, `watermark` and `schedule` describe the fetch. They are written
-for an ingestion worker configured by one spec and nothing else. No lakeworks repo implements that
-worker, so the validator is the only code that reads them.
+`adapter`, `endpoint`, `discovery`, `watermark` and `schedule` describe the fetch, for an ingestion
+worker configured by one spec and nothing else. No lakeworks repo implements that worker. The
+validator checks the first four, and nothing reads `schedule`.
 
 A mapping runs from domain column to source column. `animal_id: "Animal ID"` puts the source's
 `Animal ID` into the domain's `animal_id`. Conform drops every source column the mapping does not
@@ -96,9 +96,8 @@ problem. Conform raises on a shape it has no branch for, so a third value also n
 from the catalog on every fetch. The validator refuses a spec with no `discovery` block.
 
 Portals rename and re-issue datasets, and Austin has done both. Dallas publishes each fiscal year as
-its own dataset. A pinned id fails as an empty result, not as an error. The pipeline stays green
-while the table stops growing, which is the failure that survives longest. Pinning an id for
-stability buys nothing and costs the only signal there would have been.
+its own dataset. A pinned id fails as an empty result, not as an error: the pipeline stays green
+while the table stops growing, and nothing reports it.
 
 ## `notes` is part of the data, not a comment on it
 
@@ -128,8 +127,8 @@ Parsing is not the bar. The validator checks:
 - that a `contract`, where a spec gives one, names a file in this repo
 - that every feed's mapping is non-empty and maps `animal_id`
 
-A key added to the spec format gets its check in the same change. A key the validator does not know
-is a key that can be misspelled silently.
+A key added to the spec format gets its check in the same change. The validator ignores a key it
+does not know, so `contracts:` written for `contract:` prints `ok` and its path is never opened.
 
 The accepted values live in the script rather than in the shared platform library. They move there
 when a second domain needs the same schema.

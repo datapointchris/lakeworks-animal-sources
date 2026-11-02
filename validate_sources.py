@@ -4,9 +4,9 @@ Without this, a malformed spec fails inside a Glue job — minutes into a run, i
 with a KeyError that names a dictionary rather than a file. Every failure below is one a person can
 fix from the message alone.
 
-The schema lives here rather than in the platform library on purpose. While one domain reads it, a
-shared home adds a dependency to keep in step and a second place for the schema to break, for no
-benefit. These tables are the extraction point once a second domain needs the same schema.
+The schema lives here rather than in the platform library while one domain reads it, because a
+shared copy is a dependency to keep in step and a second place for the schema to break. These
+tables are the extraction point once a second domain needs the same schema.
 """
 
 import pathlib
