@@ -58,9 +58,14 @@ def check(path: pathlib.Path) -> list[str]:
     if spec['source_id'] != f'{spec["domain"]}.{path.stem}':
         problems.append(f'source_id `{spec["source_id"]}` does not match `{spec["domain"]}.{path.stem}`')
 
-    strategy = spec.get('watermark', {}).get('strategy')
-    if strategy not in WATERMARK_STRATEGIES:
-        problems.append(f'watermark.strategy `{strategy}` — expected one of {sorted(WATERMARK_STRATEGIES)}')
+    watermark = spec.get('watermark')
+    strategies = sorted(WATERMARK_STRATEGIES)
+    if watermark is None:
+        problems.append(f'missing `watermark` block — expected `watermark.strategy` set to one of {strategies}')
+    elif not isinstance(watermark, dict):
+        problems.append(f'`watermark` is {type(watermark).__name__} — expected a block with `strategy` set to one of {strategies}')
+    elif watermark.get('strategy') not in WATERMARK_STRATEGIES:
+        problems.append(f'watermark.strategy `{watermark.get("strategy")}` — expected one of {strategies}')
 
     # A two-feed source needs a join key, and a one-row source must not carry one. Either mistake
     # produces a cross join or a silently dropped half of the data rather than an error.
