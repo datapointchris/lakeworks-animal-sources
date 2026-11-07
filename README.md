@@ -38,8 +38,9 @@ validator refuses any other value. The extension is `.yml`. The validator and co
 
 A green validator is not the whole of adding a source. Conform maps outcome and breed spellings
 through the `dim_outcome_type` and `dim_breed` tables, keyed on `source_id` and the raw value. A
-spelling with no row there conforms as `__unmapped__`. Conform logs a warning when any outcome is
-unmapped.
+new source's spellings each need a row there. Conform's README, under
+[`jobs/conform.py`](https://github.com/datapointchris/lakeworks-animal-conform#jobsconformpy--every-source-through-one-path-with-no-branch-that-names-a-source),
+says what a spelling with no row becomes and how a run reports it.
 
 CI runs the same validator on every push to `main` and on every pull request.
 
@@ -80,19 +81,20 @@ layouts have to reach it. Neither layout is wrong.
 
 **`two_feed`** is Austin's layout: intake and outcome as separate feeds. The mapping names two
 feeds, `intake` and `outcome`. `join_key` names the domain column they join on, and both feeds must
-map it. An animal can be surrendered more than once, so its id repeats in both feeds. Conform
-matches each outcome to the latest intake before it, never to the id alone.
+map it. `austin.yml`'s `notes` say why the id alone does not key the join, and what it keys on.
 
 **`one_row`** is Sonoma's layout: one row per animal-visit, carrying both halves. The mapping names
 one feed, `combined`. Its columns for the two halves carry an `intake_` or `outcome_` prefix, and
-`intake_at` and `outcome_at` are the two timestamps. Conform splits each row into two events. A row
-with no outcome date is an animal still in care, so it yields an intake event and no outcome event.
+`intake_at` and `outcome_at` are the two timestamps. Conform splits each row into two events.
+`sonoma.yml`'s `notes` say what a row with no outcome date yields.
 
 Conform reads feeds by those three names: `intake`, `outcome` and `combined`. A feed under any other
 name is never read, and the validator does not check the names.
 
 A third value needs a third layout, not one awkward source. An awkward source is usually a mapping
-problem. Conform raises on a shape it has no branch for, so a third value also needs a branch there.
+problem. A third value also needs a branch in conform's shape dispatch. Conform's README, under
+[`jobs/conform.py`](https://github.com/datapointchris/lakeworks-animal-conform#jobsconformpy--every-source-through-one-path-with-no-branch-that-names-a-source),
+says what a run does with a shape it has no branch for.
 
 ## A spec never pins a dataset id
 
@@ -108,10 +110,8 @@ while the table stops growing, and nothing reports it.
 `notes` records what would make a number from the source wrong. That covers a shelter's intake mix,
 a jurisdiction's reporting quirk, and a vocabulary that differs from its neighbors'.
 
-`austin.yml` records that Austin is the largest no-kill city in the US. Its outcome distribution is
-therefore not nationally representative. A cross-shelter adoption-rate comparison that does not
-normalize for intake mix ranks Austin unfairly well. `sonoma.yml` records that Sonoma spells its
-outcomes differently from Austin: `EUTHANIZE` against `Euthanasia`.
+The `notes` in `austin.yml` and `sonoma.yml` are the examples to read: Austin's intake mix, and
+Sonoma's outcome vocabulary set against Austin's.
 
 A note travels with its source because the analysis that will need it does not exist to hold it.
 Keep notes when tidying a spec, and keep them in the spec rather than in a separate document.
