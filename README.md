@@ -23,6 +23,10 @@ $EDITOR <shelter>.yml               # source_id becomes animal.<shelter>, to mat
 uv run python validate_sources.py   # exit 1 names each failing file and what is wrong in it
 ```
 
+With [Task](https://taskfile.dev) installed, `task test` runs the validator and then the validator's
+own tests in `tests/`. `task lint` runs ruff and mypy without writing a file. `task setup` installs
+the dev tools and the git hooks.
+
 Copy `austin.yml` for a shelter that publishes intake and outcome as two feeds. Copy `sonoma.yml`
 for one that puts both on a single row. The `shape` section below says what each one requires.
 

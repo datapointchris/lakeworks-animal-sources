@@ -1,0 +1,41 @@
+version: '3'
+
+# Named .yaml because every *.yml at the root is a source spec. The validator and conform both read
+# that glob, so a Taskfile.yml would be checked and conformed as a shelter.
+
+tasks:
+  default:
+    desc: List the tasks
+    silent: true
+    cmds:
+      - task --list
+
+  setup:
+    desc: Install the validator's dependency and the dev tools, then the git hooks
+    cmds:
+      - uv sync
+      - uvx pre-commit install --hook-type pre-commit --hook-type commit-msg
+
+  test:
+    desc: Validate every spec, then run the pytest suite. Arguments after -- go to pytest
+    cmds:
+      - uv run python validate_sources.py
+      - uv run pytest {{.CLI_ARGS}}
+
+  lint:
+    desc: Run ruff's checks, its format check and the typecheck, writing no file
+    cmds:
+      - uv run ruff check .
+      - uv run ruff format --check .
+      - task: typecheck
+
+  typecheck:
+    desc: Type-check the validator and the tests with mypy
+    cmds:
+      - uvx mypy validate_sources.py tests
+
+  format:
+    desc: Rewrite files with ruff's formatter and its autofixes
+    cmds:
+      - uv run ruff format .
+      - uv run ruff check --fix .
