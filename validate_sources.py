@@ -64,8 +64,10 @@ def check(path: pathlib.Path) -> list[str]:
         problems.append(f'missing `watermark` block — expected `watermark.strategy` set to one of {strategies}')
     elif not isinstance(watermark, dict):
         problems.append(f'`watermark` is {type(watermark).__name__} — expected a block with `strategy` set to one of {strategies}')
-    elif watermark.get('strategy') not in WATERMARK_STRATEGIES:
-        problems.append(f'watermark.strategy `{watermark.get("strategy")}` — expected one of {strategies}')
+    elif 'strategy' not in watermark:
+        problems.append(f'`watermark` block has no `strategy` — expected `watermark.strategy` set to one of {strategies}')
+    elif watermark['strategy'] not in WATERMARK_STRATEGIES:
+        problems.append(f'watermark.strategy `{watermark["strategy"]}` — expected one of {strategies}')
 
     # A two-feed source needs a join key, and a one-row source must not carry one. Either mistake
     # produces a cross join or a silently dropped half of the data rather than an error.
