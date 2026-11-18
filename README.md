@@ -129,6 +129,7 @@ Parsing is not the bar. The validator checks:
 - `join_key` against the shape, and against every feed's mapping
 - that a `discovery` block exists
 - that a `contract`, where a spec gives one, names a file in this repo
+- that `mapping` is a block with one entry per feed
 - that every feed's mapping is non-empty and maps `animal_id`
 
 A key added to the spec format gets its check in the same change. The validator ignores a key it

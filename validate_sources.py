@@ -85,6 +85,10 @@ def check(path: pathlib.Path) -> list[str]:
     if contract is not None and not (path.parent / str(contract)).is_file():
         problems.append(f'contract `{contract}` names no file in this repo')
 
+    if not isinstance(spec['mapping'], dict):
+        problems.append(f'`mapping` is {type(spec["mapping"]).__name__} — expected a block with one entry per feed')
+        return problems
+
     join_key = spec.get('join_key') if spec['shape'] == 'two_feed' else None
     for feed, mapping in spec['mapping'].items():
         if not isinstance(mapping, dict) or not mapping:

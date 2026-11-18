@@ -60,6 +60,7 @@ REFUSALS = [
     pytest.param(_drop('discovery'), 'discovery', id='missing-discovery'),
     pytest.param(_set('contract', 'contracts/missing.yaml'), 'contract', id='contract-names-no-file'),
     pytest.param(_set('join_key', 'name'), 'join_key', id='join-key-not-mapped'),
+    pytest.param(_set('mapping', [{'animal_id': 'Animal ID'}]), 'mapping', id='mapping-not-a-block'),
     pytest.param(lambda spec: spec['mapping'].__setitem__('outcome', {}), 'mapping.outcome', id='empty-mapping'),
     pytest.param(_no_animal_id, 'animal_id', id='no-animal-id'),
 ]
